@@ -7,6 +7,7 @@
           </button>
       <div class="row mt-3">
         <product-list-item
+          @productDeleted="loadData"
           v-for="product in products"
           :key="product.id"
           :product="product"
@@ -18,6 +19,7 @@
 
 <script>
 import ProductListItem from "./ProductListItem.vue";
+import Axios from "axios";
 
 export default {
   name: "ProductList",
@@ -29,6 +31,22 @@ export default {
       products: [],
     };
   },
+  mounted() {
+    this.loadData()
+  },
+  methods: {
+    loadData() {
+      Axios.get('http://localhost/products')
+          .then(
+              result => {
+                this.products = result.data
+                console.log(result)
+              })
+          .catch(
+              error => console.log(error)
+          )
+    }
+  }
 };
 </script>
 

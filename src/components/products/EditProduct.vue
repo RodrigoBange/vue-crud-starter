@@ -31,13 +31,15 @@
         <div class="input-group mb-3">
           <span class="input-group-text">Category</span>
           <select class="form-select">
-            <option value="testoptionvalue">test option       
-            </option>
+            <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
           </select>
         </div>
 
         <div class="input-group mt-4">
-          <button type="button" class="btn btn-primary">
+          <button
+              type="button"
+              class="btn btn-primary"
+              @click="updateProduct">
             Save changes
           </button>
           <button
@@ -54,6 +56,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "EditProduct",
   props: {
@@ -71,7 +75,40 @@ export default {
       },
       categories: [],
     };
-  }  
+  },
+  mounted() {
+    axios.get('http://localhost/categories')
+        .then(
+            result => {
+              this.categories = result.data
+              console.log(result)
+            }
+        )
+        .catch(
+            error => console.log(error)
+        )
+
+    axios.get("http://localhost/products/" + this.id)
+        .then(
+            result => this.product = result.data
+        )
+        .catch(
+            error => console.log(error)
+        )
+  },
+  methods: {
+    updateProduct() {
+      axios.put("http://localhost/products/" + this.id, this.product)
+          .then(
+              response => {
+                this.$router.push('/products')
+              }
+          )
+          .catch(
+              error => console.log(error)
+          )
+    }
+  }
 };
 </script>
 

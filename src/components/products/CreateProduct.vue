@@ -30,13 +30,18 @@
 
         <div class="input-group mb-3">
           <span class="input-group-text">Category</span>
-          <select class="form-select">
-            <option value="testoptionvalue">test option</option>
+          <select class="form-select" v-model="product.category_id">
+            <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
           </select>
         </div>
 
         <div class="input-group mt-4">
-          <button type="button" class="btn btn-primary">Create product</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="createProduct"
+          >Create product
+          </button>
           <button
             type="button"
             class="btn btn-danger"
@@ -51,6 +56,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "CreateProduct",
   data() {
@@ -65,6 +72,31 @@ export default {
       categories: [],
     };
   },
+  methods: {
+    createProduct() {
+      axios.post("http://localhost/products", this.product)
+        .then(
+            response => {
+              this.$router.push('/products')
+            }
+        )
+        .catch(
+            error => console.log(error)
+        )
+    }
+  },
+  mounted() {
+    axios.get('http://localhost/categories')
+        .then(
+            result => {
+              this.categories = result.data
+              console.log(result)
+            }
+        )
+        .catch(
+            error => console.log(error)
+        )
+  }
 };
 </script>
 
